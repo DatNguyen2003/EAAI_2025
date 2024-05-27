@@ -1,4 +1,4 @@
--- chameleon_db_create.sql
+-- create_db.sql
 
 -- Create the database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS chameleon_db;

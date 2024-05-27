@@ -1,6 +1,10 @@
 import mysql.connector
 import subprocess
 
+from create_db import create_db
+from modify_keys_attributes import insert_or_update_attribute
+from open_sql_workbench import open_sql_workbench
+
 # Database configuration for initial connection
 initial_config = {
     'user': 'root',  # replace with your MySQL username
@@ -12,23 +16,16 @@ initial_config = {
 conn = mysql.connector.connect(**initial_config)
 cursor = conn.cursor()
 
-# Read the SQL file
-with open('chameleon_db_create.sql', 'r') as sql_file:
-    sql_script = sql_file.read()
-
-# Execute the SQL script
-for statement in sql_script.split(';'):
-    if statement.strip():
-        cursor.execute(statement)
-
-# Commit the changes
-conn.commit()
+create_db(conn, cursor)
 
 # Connect to the newly created database
 conn.database = 'chameleon_db'
 
+insert_or_update_attribute('Example Attribute', 'Chicken', conn, cursor)
+insert_or_update_attribute('Example Attribute', 'Pizza', conn, cursor)
+
 # Read the SQL file
-with open('chameleon_db_insert.sql', 'r') as sql_file:
+with open('create_pro_spread.sql', 'r') as sql_file:
     sql_script = sql_file.read()
 
 # Execute the SQL script
@@ -43,8 +40,4 @@ conn.commit()
 cursor.close()
 conn.close()
 
-# Replace 'path_to_mysql_workbench' with the actual path to MySQL Workbench executable
-mysql_workbench_path = r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\MySQLWorkbench.exe'
-
-# Launch MySQL Workbench
-subprocess.run([mysql_workbench_path])
+open_sql_workbench()

@@ -1,16 +1,10 @@
--- Delete all data from the keys_attributes table
-DELETE FROM keys_attributes;
+-- fill_pro_spread.sql
+
+-- Delete exsiting probability and spread data
 DELETE FROM keys_attributes_probability;
 DELETE FROM attributes_spreading;
 
--- Reset the auto-increment value of the attribute_id column
-ALTER TABLE keys_attributes AUTO_INCREMENT = 1;
-
-INSERT INTO keys_attributes 
-(attribute_name, Chicken, Pizza, Burger, Salad, Pasta, Sushi, Steak, Tacos, Soup, Sandwich, Fries, Hotdog, Curry, Rice, Fish, Cake) 
-VALUES 
-('Attributes1', 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);
-
+-- Fill the probability table
 INSERT INTO keys_attributes_probability (
     attribute_id,
     attribute_name,
@@ -74,8 +68,7 @@ FROM (
     FROM keys_attributes
 ) AS subquery;
 
-
-
+-- Fill the spread table
 INSERT INTO attributes_spreading (attribute_id, attribute_name, key_word_covering)
 SELECT 
     attribute_id,
