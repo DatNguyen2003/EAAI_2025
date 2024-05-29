@@ -8,18 +8,18 @@ def insert_or_update_attribute(attribute_name, keyword, conn, cursor):
 
     try:
         # Check if the attribute already exists
-        select_query = "SELECT * FROM keys_attributes WHERE attribute_name = %s"
+        select_query = "SELECT * FROM attributes_keys WHERE attribute_name = %s"
         cursor.execute(select_query, (attribute_name,))
         row = cursor.fetchone()
 
         if row:
             # Attribute exists, increment the keyword count
-            update_query = f"UPDATE keys_attributes SET {keyword} = {keyword} + 1 WHERE attribute_name = %s"
+            update_query = f"UPDATE attributes_keys SET {keyword} = {keyword} + 1 WHERE attribute_name = %s"
             cursor.execute(update_query, (attribute_name,))
         else:
             # Attribute does not exist, insert a new row
             insert_query = f"""
-            INSERT INTO keys_attributes 
+            INSERT INTO attributes_keys 
             (attribute_name, {', '.join(valid_keywords)}) 
             VALUES 
             (%s, {', '.join(['%s' if k != keyword else '%s' for k in valid_keywords])})

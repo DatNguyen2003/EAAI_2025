@@ -36,7 +36,8 @@ def gather_clues(players):
 def bot_guess_clue():
     return "I don't know"
 
-def bot_guess_word():
+def bot_guess_word(players):
+    attributes = [player.clue_word for player in players]
     return "I don't know"
 
 def identify_chameleon(players):

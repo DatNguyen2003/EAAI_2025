@@ -7,7 +7,7 @@ CREATE DATABASE IF NOT EXISTS chameleon_db;
 USE chameleon_db;
 
 -- Create a table if it doesn't exist
-CREATE TABLE IF NOT EXISTS keys_attributes (
+CREATE TABLE IF NOT EXISTS attributes_keys (
     attribute_id INT PRIMARY KEY AUTO_INCREMENT,
     attribute_name VARCHAR(255),
     Chicken INT DEFAULT 0,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS keys_attributes (
     Cake INT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS keys_attributes_probability (
+CREATE TABLE IF NOT EXISTS attributes_keys_probability (
     attribute_id INT PRIMARY KEY,
     attribute_name VARCHAR(255),
     Chicken FLOAT DEFAULT 0,
@@ -47,6 +47,11 @@ CREATE TABLE IF NOT EXISTS keys_attributes_probability (
     Rice FLOAT DEFAULT 0,
     Fish FLOAT DEFAULT 0,
     Cake FLOAT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS naive_bayes (
+    keyword VARCHAR(255) PRIMARY KEY,
+    probability FLOAT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS attributes_spreading (
