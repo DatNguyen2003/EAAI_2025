@@ -5,6 +5,7 @@ from create_db import create_db
 from fetch_specific_data import fetch_specific_data
 from fill_naive_bayes import fill_naive_bayes
 from fill_pro_spread import fill_pro_spread
+from fill_word2vec import fill_word2vec
 from modify_keys_attributes import insert_or_update_attribute
 from open_sql_workbench import open_sql_workbench
 from Chameleon import Player, assign_roles, gather_clues, get_secret_word, identify_chameleon, roll_dice
@@ -92,7 +93,8 @@ def main():
     # Fill the navie_bayes table
     keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
     attributes = [player.clue_word for player in players]
-    # fill_naive_bayes(keywords, attributes, conn, cursor)
+    fill_naive_bayes(keywords, attributes, conn, cursor)
+    fill_word2vec(keywords, attributes, conn, cursor)
 
     # Close the cursor and connection
     cursor.close()

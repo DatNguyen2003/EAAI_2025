@@ -16,10 +16,10 @@ def fetch_specific_data(attribute_name, keyword, conn, cursor):
 
         if row:
             # Return the value as a float
-            return float(row[0]) if row[0] is not None else 0.0
+            return float(row[0]) if row[0] is not None else 1
         else:
             # If no matching row is found, return None
-            return 0.0
+            return 1
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")

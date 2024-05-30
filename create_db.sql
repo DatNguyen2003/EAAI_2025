@@ -54,6 +54,11 @@ CREATE TABLE IF NOT EXISTS naive_bayes (
     probability FLOAT DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS word2vec (
+    keyword VARCHAR(255) PRIMARY KEY,
+    probability FLOAT DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS attributes_spreading (
     attribute_id INT PRIMARY KEY,
     attribute_name VARCHAR(255),
