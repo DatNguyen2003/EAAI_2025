@@ -2,6 +2,12 @@ import random
 import mysql.connector
 import subprocess
 
+from fetch_highest_value import fetch_highest_value
+from fill_naive_bayes import fill_naive_bayes
+from fill_word2vec import fill_word2vec
+from get_all_attribute_given_keyword import get_non_zero_attributes
+from highest_spread_attribute import get_attribute_with_highest_value
+
 
 class Player:
     def __init__(self, name, is_chameleon=False):
@@ -23,22 +29,28 @@ def assign_roles(players):
     chameleon_index = random.randint(0, len(players) - 1)
     for i, player in enumerate(players):
         player.is_chameleon = (i == chameleon_index)
-        player.is_bot = (i == chameleon_index)
 
-def gather_clues(players):
+def gather_clues(players, conn, cursor):
     for player in players:
         if not player.is_chameleon:
             player.clue_word = input(f"{player.name}, enter a clue for the secret word: ")
         else:
-            # player.clue_word = input(f"{player.name}, enter any clue (you are the Chameleon): ")
-            player.clue_word = bot_guess_clue()
+            # Fill the navie_bayes, word2vec table
+            keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
+            attributes = [player.clue_word for player in players]
+            fill_naive_bayes(keywords, attributes, conn, cursor)
+            fill_word2vec(keywords, attributes, conn, cursor)
+            player.clue_word = chameleon_guess_attribute(conn, cursor)
+            print(f"{player.name}, enter a clue for the secret word:",player.clue_word,"(this is the Chameleon)")
 
-def bot_guess_clue():
-    return "I don't know"
+def chameleon_guess_attribute(conn, cursor):
+    keyword = chameleon_guess_keyword("naive_bayes", conn, cursor)
+    attributes = get_non_zero_attributes(keyword, conn, cursor)
+    highest_value_attribute = get_attribute_with_highest_value(attributes, conn, cursor)
+    return highest_value_attribute
 
-def bot_guess_word(players):
-    attributes = [player.clue_word for player in players]
-    return "I don't know"
+def chameleon_guess_keyword(table_name, conn, cursor):
+    return fetch_highest_value(table_name, conn, cursor)
 
 def identify_chameleon(players):
     for player in players:

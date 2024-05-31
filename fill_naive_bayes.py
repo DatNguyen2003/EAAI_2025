@@ -5,6 +5,11 @@ from fetch_specific_data import fetch_specific_data
 
 def fill_naive_bayes(keywords, attributes, conn, cursor):    
   try:
+    # Delete all existing records from the naive_bayes table
+    delete_query = "DELETE FROM naive_bayes"
+    cursor.execute(delete_query)
+    conn.commit()
+
     # SQL Insert query with ON DUPLICATE KEY UPDATE
     insert_query = """
     INSERT INTO naive_bayes (keyword, probability)

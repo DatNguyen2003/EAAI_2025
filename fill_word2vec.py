@@ -5,6 +5,11 @@ from fetch_specific_data import fetch_specific_data
 
 def fill_word2vec(keywords, attributes, conn, cursor):    
   try:
+    # Delete all existing records from the word2vec table
+    delete_query = "DELETE FROM word2vec"
+    cursor.execute(delete_query)
+    conn.commit()
+    
     # SQL Insert query with ON DUPLICATE KEY UPDATE
     insert_query = """
     INSERT INTO word2vec (keyword, probability)
@@ -19,7 +24,6 @@ def fill_word2vec(keywords, attributes, conn, cursor):
       for attribute in attributes:
         probability_value += fetch_specific_data(attribute, keyword, conn, cursor)
         cursor.execute(insert_query, (keyword, probability_value))
-      probability_value -=1
 
     # Commit the transaction
     conn.commit()

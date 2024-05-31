@@ -8,7 +8,7 @@ from fill_pro_spread import fill_pro_spread
 from fill_word2vec import fill_word2vec
 from modify_keys_attributes import insert_or_update_attribute
 from open_sql_workbench import open_sql_workbench
-from Chameleon import Player, assign_roles, gather_clues, get_secret_word, identify_chameleon, roll_dice
+from Chameleon import Player, assign_roles, chameleon_guess_keyword, gather_clues, get_secret_word, identify_chameleon, roll_dice
 
 def main():
     # Database configuration for initial connection
@@ -58,21 +58,7 @@ def main():
     print(f"The secret word is at {dice_roll}.")
     print(f"Secret Word: {secret_word}")
 
-    gather_clues(players)
-    suspect = identify_chameleon(players)
-
-    for player in players:
-        if player.name == suspect:
-            if player.is_chameleon:
-                guess = input("The chameleon was correctly guessed! The Chameleon now has a last chance. Now, guess the secret word: ")
-                if guess.lower() == secret_word.lower():
-                    print("The Chameleon has escaped!")
-                else:
-                    print("The Chameleon was caught!")
-            else:
-                print(f"{suspect} was wrongly accused! The Chameleon escapes.")
-
-    print(f"The secret word was: {secret_word}")
+    gather_clues(players, conn, cursor)
 
     # Collect attributes from players (excluding the chameleon)
     data = []
@@ -90,11 +76,30 @@ def main():
     # Fill the probability and spread table in the database
     fill_pro_spread(conn, cursor)
 
-    # Fill the navie_bayes table
+    # Fill the navie_bayes, word2vec table
     keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
     attributes = [player.clue_word for player in players]
     fill_naive_bayes(keywords, attributes, conn, cursor)
     fill_word2vec(keywords, attributes, conn, cursor)
+
+    suspect = identify_chameleon(players)
+
+    for player in players:
+        if player.name == suspect:
+            if player.is_chameleon:
+                print("The Chameleon was correctly guessed! The Chameleon now has a last chance. Now, guess the secret word: ")
+                guess = chameleon_guess_keyword("naive_bayes", conn, cursor)
+                # guess = chameleon_guess_keyword("word2vec", conn, cursor)
+                print("The Chameleon has guess:",  guess)
+                if guess.lower() == secret_word.lower():
+                    print("The Chameleon has escaped!")
+                else:
+                    print("The Chameleon was caught!")
+            else:
+                print(f"{suspect} was wrongly accused! The Chameleon escapes.")
+
+    print(f"The secret word was: {secret_word}")
+
 
     # Close the cursor and connection
     cursor.close()
