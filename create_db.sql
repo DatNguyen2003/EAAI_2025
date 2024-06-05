@@ -10,22 +10,22 @@ USE chameleon_db;
 CREATE TABLE IF NOT EXISTS attributes_keys (
     attribute_id INT PRIMARY KEY AUTO_INCREMENT,
     attribute_name VARCHAR(255),
-    Chicken INT DEFAULT 0,
-    Pizza INT DEFAULT 0,
-    Burger INT DEFAULT 0,
-    Salad INT DEFAULT 0,
-    Pasta INT DEFAULT 0,
-    Sushi INT DEFAULT 0,
-    Steak INT DEFAULT 0,
-    Tacos INT DEFAULT 0,
-    Soup INT DEFAULT 0,
-    Sandwich INT DEFAULT 0,
-    Fries INT DEFAULT 0,
-    Hotdog INT DEFAULT 0,
-    Curry INT DEFAULT 0,
-    Rice INT DEFAULT 0,
-    Fish INT DEFAULT 0,
-    Cake INT DEFAULT 0
+    Chicken FLOAT DEFAULT 0,
+    Pizza FLOAT DEFAULT 0,
+    Burger FLOAT DEFAULT 0,
+    Salad FLOAT DEFAULT 0,
+    Pasta FLOAT DEFAULT 0,
+    Sushi FLOAT DEFAULT 0,
+    Steak FLOAT DEFAULT 0,
+    Tacos FLOAT DEFAULT 0,
+    Soup FLOAT DEFAULT 0,
+    Sandwich FLOAT DEFAULT 0,
+    Fries FLOAT DEFAULT 0,
+    Hotdog FLOAT DEFAULT 0,
+    Curry FLOAT DEFAULT 0,
+    Rice FLOAT DEFAULT 0,
+    Fish FLOAT DEFAULT 0,
+    Cake FLOAT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS attributes_keys_probability (

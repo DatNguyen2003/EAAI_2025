@@ -2,11 +2,16 @@ import random
 import mysql.connector
 import subprocess
 
+from create_final_attributes_keys import create_final_attributes_keys
 from fetch_highest_value import fetch_highest_value
 from fill_naive_bayes import fill_naive_bayes
 from fill_word2vec import fill_word2vec
 from get_all_attribute_given_keyword import get_non_zero_attributes
+from get_attribute_ids import get_attribute_ids
+from get_keywords_with_highest_values import get_keywords_with_highest_values
 from highest_spread_attribute import get_attribute_with_highest_value
+from run_sql import run_sql
+from run_sql_atts import run_sql_atts
 
 
 class Player:
@@ -38,6 +43,11 @@ def gather_clues(players, conn, cursor):
             # Fill the navie_bayes, word2vec table
             keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
             attributes = [player.clue_word for player in players]
+            attributes_id = get_attribute_ids(conn, cursor, attributes)
+            run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
+            keywords = get_keywords_with_highest_values(conn, cursor)
+            create_final_attributes_keys(conn, cursor, keywords)
+            run_sql('fill_pro_spread.sql',conn, cursor)
             fill_naive_bayes(keywords, attributes, conn, cursor)
             fill_word2vec(keywords, attributes, conn, cursor)
             player.clue_word = chameleon_guess_attribute(conn, cursor)
@@ -48,6 +58,7 @@ def chameleon_guess_attribute(conn, cursor):
     attributes = get_non_zero_attributes(keyword, conn, cursor)
     highest_value_attribute = get_attribute_with_highest_value(attributes, conn, cursor)
     return highest_value_attribute
+
 
 def chameleon_guess_keyword(table_name, conn, cursor):
     return fetch_highest_value(table_name, conn, cursor)

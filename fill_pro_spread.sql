@@ -2,7 +2,6 @@
 
 -- Delete exsiting probability, navie_bayes and spread data
 DELETE FROM attributes_keys_probability;
-DELETE FROM naive_bayes;
 DELETE FROM attributes_spreading;
 
 -- Fill the probability table
@@ -29,22 +28,22 @@ INSERT INTO attributes_keys_probability (
 SELECT 
     attribute_id,
     attribute_name,
-    ((Chicken+1) / NULLIF(total, 0)) AS Chicken,
-    ((Pizza+1) / NULLIF(total, 0)) AS Pizza,
-    ((Burger+1) / NULLIF(total, 0)) AS Burger,
-    ((Salad+1) / NULLIF(total, 0)) AS Salad,
-    ((Pasta+1) / NULLIF(total, 0)) AS Pasta,
-    ((Sushi+1) / NULLIF(total, 0)) AS Sushi,
-    ((Steak+1) / NULLIF(total, 0)) AS Steak,
-    ((Tacos+1) / NULLIF(total, 0)) AS Tacos,
-    ((Soup+1) / NULLIF(total, 0)) AS Soup,
-    ((Sandwich+1) / NULLIF(total, 0)) AS Sandwich,
-    ((Fries+1) / NULLIF(total, 0)) AS Fries,
-    ((Hotdog+1) / NULLIF(total, 0)) AS Hotdog,
-    ((Curry+1) / NULLIF(total, 0)) AS Curry,
-    ((Rice+1) / NULLIF(total, 0)) AS Rice,
-    ((Fish+1) / NULLIF(total, 0)) AS Fish,
-    ((Cake+1) / NULLIF(total, 0)) AS Cake
+    ((Chicken) / NULLIF(total, 0)) AS Chicken,
+    ((Pizza) / NULLIF(total, 0)) AS Pizza,
+    ((Burger) / NULLIF(total, 0)) AS Burger,
+    ((Salad) / NULLIF(total, 0)) AS Salad,
+    ((Pasta) / NULLIF(total, 0)) AS Pasta,
+    ((Sushi) / NULLIF(total, 0)) AS Sushi,
+    ((Steak) / NULLIF(total, 0)) AS Steak,
+    ((Tacos) / NULLIF(total, 0)) AS Tacos,
+    ((Soup) / NULLIF(total, 0)) AS Soup,
+    ((Sandwich) / NULLIF(total, 0)) AS Sandwich,
+    ((Fries) / NULLIF(total, 0)) AS Fries,
+    ((Hotdog) / NULLIF(total, 0)) AS Hotdog,
+    ((Curry) / NULLIF(total, 0)) AS Curry,
+    ((Rice) / NULLIF(total, 0)) AS Rice,
+    ((Fish) / NULLIF(total, 0)) AS Fish,
+    ((Cake) / NULLIF(total, 0)) AS Cake
 FROM (
     SELECT 
         attribute_id,
@@ -65,8 +64,8 @@ FROM (
         Rice,
         Fish,
         Cake,
-        (Chicken + Pizza + Burger + Salad + Pasta + Sushi + Steak + Tacos + Soup + Sandwich + Fries + Hotdog + Curry + Rice + Fish + Cake + 16) AS total
-    FROM attributes_keys
+        (Chicken + Pizza + Burger + Salad + Pasta + Sushi + Steak + Tacos + Soup + Sandwich + Fries + Hotdog + Curry + Rice + Fish + Cake) AS total
+    FROM final_attributes_keys
 ) AS subquery;
 
 -- Fill the spread table

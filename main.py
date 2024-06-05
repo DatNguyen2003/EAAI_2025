@@ -1,14 +1,17 @@
 import mysql.connector
 import subprocess
 
-from create_db import create_db
+from create_final_attributes_keys import create_final_attributes_keys
 from fetch_specific_data import fetch_specific_data
 from fill_naive_bayes import fill_naive_bayes
-from fill_pro_spread import fill_pro_spread
 from fill_word2vec import fill_word2vec
+from get_attribute_ids import get_attribute_ids
+from get_keywords_with_highest_values import get_keywords_with_highest_values
 from modify_keys_attributes import insert_or_update_attribute
 from open_sql_workbench import open_sql_workbench
 from Chameleon import Player, assign_roles, chameleon_guess_keyword, gather_clues, get_secret_word, identify_chameleon, roll_dice
+from run_sql import run_sql
+from run_sql_atts import run_sql_atts
 
 def main():
     # Database configuration for initial connection
@@ -22,8 +25,9 @@ def main():
     conn = mysql.connector.connect(**initial_config)
     cursor = conn.cursor()
 
-    # Create chameleon_db
-    create_db(conn, cursor)
+    # Create chameleon_db 
+    run_sql('create_db.sql' ,conn, cursor)
+
 
     # Connect to the newly created database
     conn.database = 'chameleon_db'
@@ -70,15 +74,21 @@ def main():
             data.append(tuple(entry))  # Convert list to tuple
 
     # Insert or update attributes in the database
-    for entry in data:
-        insert_or_update_attribute(entry[0], secret_word, conn, cursor)  # Assuming insert_or_update_attribute handles the entry
+    # for entry in data:
+    #     insert_or_update_attribute(entry[0], secret_word, conn, cursor)  # Assuming insert_or_update_attribute handles the entry
+
+    # Create the final_attributes_keys_table in the database
+    attributes = [player.clue_word for player in players]
+    attributes_id = get_attribute_ids(conn, cursor, attributes)
+    run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
+    keywords = get_keywords_with_highest_values(conn, cursor)
+    create_final_attributes_keys(conn, cursor, keywords)
 
     # Fill the probability and spread table in the database
-    fill_pro_spread(conn, cursor)
+    run_sql('fill_pro_spread.sql',conn, cursor)
 
-    # Fill the navie_bayes, word2vec table
+    # # Fill the navie_bayes, word2vec table
     keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
-    attributes = [player.clue_word for player in players]
     fill_naive_bayes(keywords, attributes, conn, cursor)
     fill_word2vec(keywords, attributes, conn, cursor)
 
