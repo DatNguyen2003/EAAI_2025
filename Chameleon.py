@@ -42,7 +42,7 @@ def gather_clues(players, conn, cursor):
         else:
             # Fill the navie_bayes, word2vec table
             keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
-            attributes = [player.clue_word for player in players]
+            attributes = [player.clue_word for player in players if not player.is_chameleon]
             attributes_id = get_attribute_ids(conn, cursor, attributes)
             run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
             keywords = get_keywords_with_highest_values(conn, cursor)
@@ -50,13 +50,15 @@ def gather_clues(players, conn, cursor):
             run_sql('fill_pro_spread.sql',conn, cursor)
             fill_naive_bayes(keywords, attributes, conn, cursor)
             fill_word2vec(keywords, attributes, conn, cursor)
-            player.clue_word = chameleon_guess_attribute(conn, cursor)
+            player.clue_word = chameleon_guess_attribute(attributes, conn, cursor)
             print(f"{player.name}, enter a clue for the secret word:",player.clue_word,"(this is the Chameleon)")
 
-def chameleon_guess_attribute(conn, cursor):
+def chameleon_guess_attribute(attributes, conn, cursor):
     keyword = chameleon_guess_keyword("naive_bayes", conn, cursor)
-    attributes = get_non_zero_attributes(keyword, conn, cursor)
-    highest_value_attribute = get_attribute_with_highest_value(attributes, conn, cursor)
+    non_zero_attributes = get_non_zero_attributes(keyword, conn, cursor)
+    set2 = set(attributes)
+    final_list_attributes = [attribute for attribute in non_zero_attributes if attribute not in set2]
+    highest_value_attribute = get_attribute_with_highest_value(final_list_attributes, conn, cursor)
     return highest_value_attribute
 
 

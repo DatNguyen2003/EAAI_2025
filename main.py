@@ -8,7 +8,6 @@ from fill_word2vec import fill_word2vec
 from get_attribute_ids import get_attribute_ids
 from get_keywords_with_highest_values import get_keywords_with_highest_values
 from modify_keys_attributes import insert_or_update_attribute
-from open_sql_workbench import open_sql_workbench
 from Chameleon import Player, assign_roles, chameleon_guess_keyword, gather_clues, get_secret_word, identify_chameleon, roll_dice
 from run_sql import run_sql
 from run_sql_atts import run_sql_atts
@@ -20,6 +19,9 @@ def main():
         'password': '2003',  # replace with your MySQL password
         'host': 'localhost'
     }
+
+  # Replace 'path_to_mysql_workbench' with the actual path to MySQL Workbench executable
+    mysql_workbench_path = r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\MySQLWorkbench.exe'
 
     # Connect to the MySQL server
     conn = mysql.connector.connect(**initial_config)
@@ -78,7 +80,7 @@ def main():
     #     insert_or_update_attribute(entry[0], secret_word, conn, cursor)  # Assuming insert_or_update_attribute handles the entry
 
     # Create the final_attributes_keys_table in the database
-    attributes = [player.clue_word for player in players]
+    attributes = [player.clue_word for player in players if not player.is_chameleon]
     attributes_id = get_attribute_ids(conn, cursor, attributes)
     run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
     keywords = get_keywords_with_highest_values(conn, cursor)
@@ -116,7 +118,7 @@ def main():
     conn.close()
 
     # Open SQL Workbench
-    open_sql_workbench()
+    subprocess.run([mysql_workbench_path])
 
 if __name__ == "__main__":
     main()

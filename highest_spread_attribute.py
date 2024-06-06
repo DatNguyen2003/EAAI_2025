@@ -27,30 +27,3 @@ def get_attribute_with_highest_value(attributes, conn, cursor):
         print(f"Error: {err}")
         return None
 
-# Example usage
-if __name__ == "__main__":
-    # Connect to the MySQL database
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="yourusername",
-        password="yourpassword",
-        database="yourdatabase"
-    )
-    
-    # Create a cursor
-    cursor = conn.cursor()
-
-    # Example list of attributes
-    attributes = ['attribute1', 'attribute2', 'attribute3']  # Replace with actual attribute names
-
-    # Get the attribute with the highest key_word_covering value
-    highest_value_attribute = get_attribute_with_highest_value(attributes, conn, cursor)
-    
-    if highest_value_attribute:
-        print("Attribute with the highest key_word_covering value:", highest_value_attribute)
-    else:
-        print("No matching attributes found.")
-
-    # Close the cursor and connection
-    cursor.close()
-    conn.close()
