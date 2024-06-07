@@ -35,10 +35,11 @@ def assign_roles(players):
     for i, player in enumerate(players):
         player.is_chameleon = (i == chameleon_index)
 
-def gather_clues(players, conn, cursor):
+def gather_clues(players, attributes_input, conn, cursor):
     for player in players:
         if not player.is_chameleon:
-            player.clue_word = input(f"{player.name}, enter a clue for the secret word: ")
+            player.clue_word = attributes_input.pop()
+            print(f"{player.name}, enter a clue for the secret word:",player.clue_word)
         else:
             # Fill the navie_bayes, word2vec table
             keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
@@ -52,6 +53,11 @@ def gather_clues(players, conn, cursor):
             fill_word2vec(keywords, attributes, conn, cursor)
             player.clue_word = chameleon_guess_attribute(attributes, conn, cursor)
             print(f"{player.name}, enter a clue for the secret word:",player.clue_word,"(this is the Chameleon)")
+
+            if player.clue_word in attributes_input:
+                attributes_input.remove(player.clue_word)
+
+
 
 def chameleon_guess_attribute(attributes, conn, cursor):
     keyword = chameleon_guess_keyword("naive_bayes", conn, cursor)

@@ -64,7 +64,9 @@ def main():
     print(f"The secret word is at {dice_roll}.")
     print(f"Secret Word: {secret_word}")
 
-    gather_clues(players, conn, cursor)
+    attributes_input_str = input("Enter list of attributes:")
+    attributes_input = attributes_input_str.split()
+    gather_clues(players, attributes_input, conn, cursor)
 
     # Collect attributes from players (excluding the chameleon)
     data = []
@@ -76,8 +78,8 @@ def main():
             data.append(tuple(entry))  # Convert list to tuple
 
     # Insert or update attributes in the database
-    # for entry in data:
-    #     insert_or_update_attribute(entry[0], secret_word, conn, cursor)  # Assuming insert_or_update_attribute handles the entry
+    for entry in data:
+        insert_or_update_attribute(entry[0], secret_word, conn, cursor)  # Assuming insert_or_update_attribute handles the entry
 
     # Create the final_attributes_keys_table in the database
     attributes = [player.clue_word for player in players if not player.is_chameleon]
@@ -94,7 +96,11 @@ def main():
     fill_naive_bayes(keywords, attributes, conn, cursor)
     fill_word2vec(keywords, attributes, conn, cursor)
 
-    suspect = identify_chameleon(players)
+    # suspect = identify_chameleon(players)
+    for player in players:
+        if player.is_chameleon:
+            suspect = player.name
+            break
 
     for player in players:
         if player.name == suspect:
