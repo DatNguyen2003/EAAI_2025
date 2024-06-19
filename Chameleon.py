@@ -10,6 +10,7 @@ from get_all_attribute_given_keyword import get_non_zero_attributes
 from get_attribute_ids import get_attribute_ids
 from get_keywords_with_highest_values import get_keywords_with_highest_values
 from highest_spread_attribute import get_attribute_with_highest_value
+from modify_keys_attributes import insert_or_update_attribute
 from run_sql import run_sql
 from run_sql_atts import run_sql_atts
 
@@ -35,11 +36,14 @@ def assign_roles(players):
     for i, player in enumerate(players):
         player.is_chameleon = (i == chameleon_index)
 
-def gather_clues(players, attributes_input, conn, cursor):
+def gather_clues(players, attributes_input, secret_word, conn, cursor):
     for player in players:
         if not player.is_chameleon:
             player.clue_word = attributes_input.pop()
             print(f"{player.name}, enter a clue for the secret word:",player.clue_word)
+            entry = [player.clue_word] + [0] * 16  # Create an entry with all 0s except the first element
+            entry = tuple(entry)
+            insert_or_update_attribute(entry[0], secret_word, conn, cursor)
         else:
             # Fill the navie_bayes, word2vec table
             keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
