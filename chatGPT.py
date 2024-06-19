@@ -5,7 +5,7 @@ import os
 prompt = open('./openAI_prompt.txt', 'r', encoding="utf8")
 prompt = ''.join(prompt.readlines())
 
-openai.key='sk-proj-rGjKVLWh2WRqhfhJzouLT3BlbkFJsgmddIT6LAEPx64DciB4'
+openai.key='API key'
 client = OpenAI(api_key=openai.key)
 
 
