@@ -1,4 +1,4 @@
-system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: Please generate data for a run of the Chameleon game.
+system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: system: Please generate data for a run of the Chameleon game.
 Description of the game: there will be 6 players where 1 is the Chameleon and the rest is human.
 All human will know a random keywords within a pool of keyword each run while the Chameleon is not.
 Everyone will give an attributes that is related to the keyword in order (The Chameleon will be chosen randomly among the players).
@@ -33,12 +33,3 @@ Input:
 1. You ask what is the serect keywrd and I will give a Keyword and ask if the list of attributes lead to a win or a lost. 
 2. I tell if the match result in a win or a lost for human (The Chameleon have figured out the keyword or not).
 
-
-user: Fish
-assistant: fishing aquatic seafood salmon sushi healthy omega-3.
-user: lost
-assistant: fishing aquatic seafood salmon sushi healthy omega-3.
-user: Fries
-assistant: crispy potato salty snacks fast-food accompaniment.
-user: lost
-assistant: crispy potato salty snacks fast-food accompaniment.

@@ -1,3 +1,4 @@
+import json
 import random
 import mysql.connector
 import subprocess
@@ -20,6 +21,10 @@ class Player:
         self.name = name
         self.is_chameleon = is_chameleon
         self.clue_word = ""
+        self.order = 0
+    
+    def to_json(self):
+        return json.dumps(self.__dict__)
 
 def roll_dice():
     return random.randint(1, 4), random.randint(1, 4)
@@ -33,8 +38,11 @@ def get_secret_word(topic_card, code_card, dice_roll):
 
 def assign_roles(players):
     chameleon_index = random.randint(0, len(players) - 1)
+    order = 1
     for i, player in enumerate(players):
         player.is_chameleon = (i == chameleon_index)
+        player.order = order
+        order += 1
 
 def gather_clues(players, attributes_input, secret_word, conn, cursor):
     for player in players:
@@ -46,16 +54,20 @@ def gather_clues(players, attributes_input, secret_word, conn, cursor):
             insert_or_update_attribute(entry[0], secret_word, conn, cursor)
         else:
             # Fill the navie_bayes, word2vec table
-            keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
-            attributes = [player.clue_word for player in players if not player.is_chameleon]
-            attributes_id = get_attribute_ids(conn, cursor, attributes)
-            run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
-            keywords = get_keywords_with_highest_values(conn, cursor)
-            create_final_attributes_keys(conn, cursor, keywords)
-            run_sql('fill_pro_spread.sql',conn, cursor)
-            fill_naive_bayes(keywords, attributes, conn, cursor)
-            fill_word2vec(keywords, attributes, conn, cursor)
-            player.clue_word = chameleon_guess_attribute(attributes, conn, cursor)
+            if (player.order!=1):
+                keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
+                attributes = [player.clue_word for player in players if not player.is_chameleon]
+                attributes_id = get_attribute_ids(conn, cursor, attributes)
+                run_sql_atts('sorted_rows.sql', attributes_id, conn, cursor)
+                keywords = get_keywords_with_highest_values(conn, cursor)
+                create_final_attributes_keys(conn, cursor, keywords)
+                run_sql('fill_pro_spread.sql',conn, cursor)
+                fill_naive_bayes(keywords, attributes, conn, cursor)
+                fill_word2vec(keywords, attributes, conn, cursor)
+                player.clue_word = chameleon_guess_attribute(attributes, conn, cursor)
+            else:
+                attributes = [player.clue_word for player in players if not player.is_chameleon]
+                player.clue_word = get_attribute_with_highest_value(attributes, conn, cursor)
             print(f"{player.name}, enter a clue for the secret word:",player.clue_word,"(this is the Chameleon)")
 
             if player.clue_word in attributes_input:

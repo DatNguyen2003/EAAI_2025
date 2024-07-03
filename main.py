@@ -1,3 +1,4 @@
+import re
 import mysql.connector
 import subprocess
 import openai
@@ -10,6 +11,7 @@ from fill_naive_bayes import fill_naive_bayes
 from fill_word2vec import fill_word2vec
 from get_attribute_ids import get_attribute_ids
 from get_keywords_with_highest_values import get_keywords_with_highest_values
+from insert_game_record import insert_chameleon_game
 from modify_keys_attributes import insert_or_update_attribute
 from Chameleon import Player, assign_roles, chameleon_guess_keyword, gather_clues, get_secret_word, identify_chameleon, roll_dice
 from run_sql import run_sql
@@ -54,7 +56,7 @@ def main():
     prompt = open('./openAI_prompt.txt', 'r', encoding="utf8")
     prompt = ''.join(prompt.readlines())
 
-    openai.key='API key'
+    openai.key= 'API key'
     client = OpenAI(api_key=openai.key)
 
 
@@ -65,7 +67,7 @@ def main():
     }
     ]
 
-    for _ in range(2):
+    for _ in range(10000   ):
         players = [Player("Dat"), Player("Tri"), Player("Bu"), Player("Lam"), Player("KD"), Player("TA")]
         
         assign_roles(players)
@@ -146,10 +148,13 @@ def main():
         # Append the assistant's response to the messages list
         messages.append({'role': 'assistant', 'content': reply})
         
-        # Optionally, save the conversation to a file
-        with open('./openAI_prompt.txt', 'w') as file:
-            for message in messages:
-                file.write(f"{message['role']}: {message['content']}\n")
+        # # Optionally, save the conversation to a file
+        # with open('./openAI_prompt.txt', 'w') as file:
+        #     for message in messages:
+        #         file.write(f"{message['role']}: {message['content']}\n")
+
+        order_list = [player.to_json() for player in players]
+        insert_chameleon_game(result, secret_word, order_list, conn, cursor)
 
         # Collect attributes from players (excluding the chameleon)
         data = []

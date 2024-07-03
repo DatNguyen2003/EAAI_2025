@@ -65,3 +65,15 @@ CREATE TABLE IF NOT EXISTS attributes_spreading (
     key_word_covering INT
 );
 
+CREATE TABLE IF NOT EXISTS ChameleonGame (
+    GameID INT AUTO_INCREMENT PRIMARY KEY,
+    Keyword VARCHAR(100) NOT NULL,
+    Result VARCHAR(100) NOT NULL,
+    Order1 TEXT NOT NULL,
+    Order2 TEXT NOT NULL,
+    Order3 TEXT NOT NULL,
+    Order4 TEXT NOT NULL,
+    Order5 TEXT NOT NULL,
+    Order6 TEXT NOT NULL
+ -- Storing players' data as a JSON string
+);
