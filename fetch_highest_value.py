@@ -1,22 +1,3 @@
-import mysql.connector
-
-def fetch_highest_value(table_name, conn, cursor):
-    try:
-        # Build the query to select the keyword with the highest probability
-        query = f"SELECT keyword FROM {table_name} ORDER BY probability DESC LIMIT 1"
-        
-        # Execute the query
-        cursor.execute(query)
-        row = cursor.fetchone()
-
-        if row:
-            # Return the keyword
-            return row[0]
-        else:
-            # If no rows are found, return None
-            return None
-
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return None
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:aca4205015f633a9310c7e14c9522bf5f21b463439947077435d391a5bc8e21e
+size 624
