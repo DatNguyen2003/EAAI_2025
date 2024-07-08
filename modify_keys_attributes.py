@@ -1,35 +1,3 @@
-import mysql.connector
-
-def insert_or_update_attribute(attribute_name, keyword, conn, cursor):        
-    # Ensure keyword is valid and in the table schema
-    valid_keywords = ['Chicken', 'Pizza', 'Burger', 'Salad', 'Pasta', 'Sushi', 'Steak', 'Tacos', 'Soup', 'Sandwich', 'Fries', 'Hotdog', 'Curry', 'Rice', 'Fish', 'Cake']
-    if keyword not in valid_keywords:
-        raise ValueError(f"Invalid keyword '{keyword}'. Must be one of {valid_keywords}")
-
-    try:
-        # Check if the attribute already exists
-        select_query = "SELECT * FROM attributes_keys WHERE attribute_name = %s"
-        cursor.execute(select_query, (attribute_name,))
-        row = cursor.fetchone()
-
-        if row:
-            # Attribute exists, increment the keyword count
-            update_query = f"UPDATE attributes_keys SET {keyword} = {keyword} + 1 WHERE attribute_name = %s"
-            cursor.execute(update_query, (attribute_name,))
-        else:
-            # Attribute does not exist, insert a new row
-            insert_query = f"""
-            INSERT INTO attributes_keys 
-            (attribute_name, {', '.join(valid_keywords)}) 
-            VALUES 
-            (%s, {', '.join(['%s' if k != keyword else '%s' for k in valid_keywords])})
-            """
-            values = [attribute_name] + [1 if k == keyword else 0 for k in valid_keywords]
-            cursor.execute(insert_query, tuple(values))
-
-        # Commit the transaction
-        conn.commit()
-
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        conn.rollback()
+version https://git-lfs.github.com/spec/v1
+oid sha256:662e278d4dfaf685c413713b98be78ceb18344c6b70331cd08924ae80cec3987
+size 1589
